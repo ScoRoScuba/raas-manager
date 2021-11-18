@@ -1,0 +1,189 @@
+{
+  "EC2RAASManager": {
+    "ComponentType": "SsmParameter",
+    "Stage": "01",
+    "Descriptors" : {
+        "MongoDBConnectionString": {
+            "Properties": {
+                "Name": "Mongo__ConnectionString",
+                "Type": "SecureString",
+                "Value": "<[[ mongodb_connectionstring ]]>",
+                "Description": "Must be encrypted by the build KMS key"
+            }
+        }
+      }
+  },
+  "web": {
+    "ComponentType": "<[[ component-type ]]>",
+    "Stage": "02",
+    "Descriptors": {
+      "EC2Instance": {
+        "Platform": "amazon",
+        "SubnetZone": "Interconnect",
+        "Properties": {
+          "InstanceType": "<[[ instance-type ]]>"
+        },
+        "CfnInit": {
+          "configSets": {
+            "default": [
+              "Setup",
+              "Install"
+            ]
+          },
+          "Setup": {
+            "sources": {
+              "/tmp/app": {
+                "Fn::Join": [
+                  "/",
+                  [
+                    {
+                      "Ref": "BuildS3"
+                    },
+                    "app.zip"
+                  ]
+                ]
+              },
+              "/tmp/raasmanager": {
+                "Fn::Join": [
+                  "/",
+                  [
+                    {
+                      "Ref": "BuildS3"
+                    },
+                    "raasmanager.tar.gz"
+                  ]
+                ]
+              }
+            },
+            "commands": {
+              "02-uninstallntp": {
+                "command": "sudo yum -y erase ntp*",
+                "ignoreErrors": "false"
+              },
+              "03-release-yum-lock": {
+                "command": "bin/bash /tmp/app/env/release-yum-lock.sh"
+              }
+            }
+          },
+          "Install": {
+            "packages" : {
+              "yum": {
+                  "nginx": [1.12.1],
+                  "chrony": []
+              }
+            },
+            "commands":{
+              "01-configure-environment-variables": {
+                  "command": "bin/bash /tmp/app/variables/configure-environment-variables.sh"
+              },
+              "02-decrypt-secrets": {
+                  "command": "bin/bash /tmp/app/variables/add-keys-to-env.sh /pipeline/${bamboo_application}-${bamboo_branch}-${bamboo_buildNumber}/ /etc/profile.d/ssm_param_context.sh"
+              },
+              "03-configure-dotnet": {
+                  "command": "bin/bash /tmp/app/env/configure-dotnet.sh"
+              },
+              "04-install-new-relic": {
+                  "command": "bin/bash /tmp/app/app-deployment/install-new-relic.sh /etc/profile.d/ssm_param_context.sh"
+              },
+              "05-release-yum-lock": {
+                "command": "bin/bash /tmp/app/env/release-yum-lock.sh"
+              },
+              "06-configure-dotnet-prerequisites": {
+                  "command": "bin/bash /tmp/app/env/configure-dotnet-prerequisites.sh"
+              },
+              "07-install-web-app": {
+                  "command": "bin/bash /tmp/app/app-deployment/install-web-app.sh"
+              },
+              "08-copynginxconfig": {
+                  "command": "sudo mv /tmp/app/nginx/nginx.conf /etc/nginx/nginx.conf",
+                  "ignoreErrors": "false"
+              },
+              "09-install-waf": {
+                "command": "bin/bash /tmp/app/waf/install-waf.sh",
+                "ignoreErrors": "false"
+              },
+              "10-copywafconfig": {
+                  "command": "sudo mv /tmp/app/waf/agent.conf /etc/sigsci/agent.conf",
+                  "ignoreErrors": "false"
+              }, 
+              "11-configure-newrelic": {
+                "command": "sudo mv /tmp/app/new-relic/newrelic.config /usr/local/newrelic-netcore20-agent/newrelic.config",
+                "ignoreErrors": "false"
+              },
+              "12-environment-newrelic": {
+                "command": "/usr/local/newrelic-netcore20-agent/setenv.sh",
+                "ignoreErrors": "false"
+              },
+              "13-start-service": {
+                  "command": "bin/bash /tmp/app/app-deployment/start-service.sh"
+              }
+            },
+            "services": {
+              "sysvinit": {
+                "nginx": {
+                  "enabled": "true",
+                  "ensureRunning": "true",
+                  "files": [
+                    "/etc/nginx/conf.d/default.conf"
+                  ]
+                },
+                "chronyd": {
+                    "enabled": "true",
+                    "ensureRunning": "true",
+                },
+                "raasmanagerservice": {
+                    "enabled": "true",
+                    "ensureRunning": "true"
+                }
+              }
+            }
+          }
+        }
+      },
+      "LaunchConfiguration": {
+        "Properties" : {
+        "InstanceType": "<[[ instance-type ]]>"
+        }
+      },
+      "AutoScalingGroup": {
+          "Properties": {
+              "MinSize": "<[[ auto-scaling-min-size ]]>",
+              "MaxSize": "<[[ auto-scaling-max-size ]]>"
+          }
+       },
+       "LoadBalancer": {
+        "SubnetZone": "<[[ load-balancer-subnet-zone ]]>",
+        "Properties" : {
+            "HealthCheck": {
+                "Target": "HTTP:80/api/healthcheck"
+            },
+            "Listeners": [
+            {
+                "LoadBalancerPort": "443",
+                "Protocol": "HTTPS",
+                "SSLCertificateId": "<[[https-certid]]>",
+                "InstancePort": "80",
+                "InstanceProtocol": "HTTP"
+            }
+          ],
+          "Tags": [
+            {
+              "Key":  "billing1",
+              "Value": "customer-instruction-pricing"
+            },
+            {
+              "Key": "team",
+              "Value": "customer-instruction-pricing"
+            }
+          ]
+        }
+      } 
+    }
+  },
+  "AppServerAlias": {
+    "ComponentType" : "component_alias",
+    "Stage" : "03",
+    "Alias" : "<[[ alias-url ]]>",
+    "TargetComponent" : "web"
+  }
+}

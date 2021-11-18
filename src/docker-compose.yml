@@ -1,0 +1,9 @@
+version: '3.4'
+
+services:
+  ofx.staticrates:
+    image: ofxraasmanager
+    container_name: ofx.raasmanager
+    build:
+      context: .
+      dockerfile: OFX.RAASManager/Dockerfile

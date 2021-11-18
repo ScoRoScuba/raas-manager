@@ -1,0 +1,70 @@
+﻿@model OFX.RAASManager.ViewModel.AuditViewModel
+@{
+    ViewBag.PageTitle = "Static rates summary";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@if (Model == null)
+{
+    <span>No Data to display...</span>
+}
+else
+{
+    <table id="summary_table">
+        <thead id="summary_tablehead">
+            <tr>
+                <th>
+                    START
+                </th>
+                <th>
+                    END
+                </th>
+                <th>
+                    DURATION
+                </th>
+                <th>
+                    LAST EDITED BY
+                </th>
+                <th>
+                    STATUS
+                </th>
+                <th>
+                    ACTIONS
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.AuditSummaries)
+            { 
+                <tr class="tablerow">
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.StartDateUTC)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.StopDateUTC)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DurationInHours)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UpdatedBy)
+                    </td>
+                    <td class=@(item.Status == "ACTIVE" ? "activeStatus" : "completeStatus")>
+                        @Html.DisplayFor(modelItem => item.Status)
+                    </td>
+                    <td>
+                        <div class=@(item.Status == "ACTIVE" ? "showEdit" : "hideEdit")>
+                            <table>
+                                <tr>
+                                    <td>
+                                        <a class="tertiary-button" href="@Url.Action("Rates", "AuditSummary", new {auditSummaryId = item.Id})"> VIEW RATES </a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

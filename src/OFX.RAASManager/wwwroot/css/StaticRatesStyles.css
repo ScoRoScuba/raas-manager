@@ -1,0 +1,152 @@
+.tablerow {
+    height: 18px;
+    width: 71px;
+    color: #111111;
+    font-family: Nunito;
+    font-size: 14px;
+    background-color: #FFFFFF;
+    line-height: 33px;
+}
+
+#staticRateTitle{
+    color: #3C3C3B;
+    font-family: CiutadellaRounded ;
+    font-size: 32px;
+    font-weight: 600;
+    margin-top: 50px
+}
+
+#pageTitle {
+    height: 18px;
+    color: #3C3C3B;
+    font-family: Nunito ;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+#summary_tablehead {
+    color: #3C3C3B;
+    font-family: CiutadellaRounded;
+    background-color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    line-height: 33px;
+    text-align: left;
+    border-radius: 4px 4px 0 0;
+    box-shadow: 0 8px 16px 0 rgba(17, 17, 17, 0.08);
+}
+#staticRateBackground {
+    background-image: url('../img/staticratessummary_bg.png');
+    /* Full height */
+    height: 100%;
+    /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+#summary_table {
+    table-layout: fixed;
+    width: 90%;
+}
+
+.activeStatus {
+    color: #ffffff;
+    background-color: #006600;
+    font-family: Nunito;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    line-height: 12px;
+    padding-left: 9px;
+    border-radius: 2px;
+    padding-right: 9px;
+    padding-bottom: 4px;
+    margin-left: 20px;
+    margin-top: 10px;
+    display: inline-block;
+}
+
+.completeStatus {
+    color: #ffffff;
+    background-color: #3C3C3B;
+    font-family: Nunito;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    line-height: 12px;
+    padding-left: 9px;
+    padding-right: 9px;
+    border-radius: 2px;
+    padding-bottom: 4px;
+    margin-left: 20px;
+    margin-top: 10px;
+    display: inline-block;
+}
+
+th, td {
+    padding-left: 20px;
+}
+
+table#mainTable {
+    font-family: CiutadellaRounded ;
+}
+
+#editRates {
+    height: 14px;
+    width: 56px;
+    color: #3C3C3B;
+    font-family: CiutadellaRounded;
+    font-size: 14px;
+    line-height: 17px;
+    padding-left: 0;
+    font-weight: 600
+}
+#editImg {
+    width: 10%;
+}
+
+.showEdit {
+    visibility: visible;
+}
+.hideEdit {
+    visibility: hidden;
+}
+
+#staticRatesMainPage {
+    width: 90%;
+    padding-left: 50px;
+}
+
+img {
+    margin-top: 30px;
+    vertical-align: bottom;
+}
+
+.dateDiv {
+    width: 89%;
+    color: #111111;
+    font-family: Nunito;
+    font-size: 14px;
+    font-weight: bold;
+    background-color: #FFFFFF;
+    line-height: 53px;
+    padding-left: 20px;
+}
+
+.tertiary-button {
+    text-align: right;
+    height: 16px;
+    width: 182px;
+    color: #3C3C3B;
+    font-family: CiutadellaRounded;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 19px;
+    cursor: pointer;
+    text-decoration: none;
+    margin-top: 30px;
+}
+
+ 

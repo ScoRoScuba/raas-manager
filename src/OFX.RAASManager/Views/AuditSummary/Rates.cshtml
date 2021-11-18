@@ -1,0 +1,74 @@
+﻿@model OFX.RAASManager.ViewModel.AuditSummaryViewModel
+@{
+    ViewBag.PageTitle = "Review Static Rates";
+    Layout = "_Layout";
+}
+
+@if (Model == null)
+{
+    <span>No Rates to display...</span>
+}
+else
+{
+    <div>
+        <div class="dateDiv">
+            @Html.DisplayFor(modelItem => Model.StartDateUTC) - @Html.DisplayFor(modelItem => Model.StopDateUTC)
+        </div>
+        <div>
+            <table id="summary_table">
+                <thead id="summary_tablehead">
+                    <tr>
+                        <th>
+                            CURRENCY PAIR
+                        </th>
+                        <th>
+                            RATE
+                        </th>
+                        <th>
+                            BID
+                        </th>
+                        <th>
+                            ASK
+                        </th>
+                        <th>
+                            SPREAD
+                        </th>
+                        <th>
+                            MARGIN
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.SpotRateAuditSummaries)
+                    {
+                        <tr class="tablerow">
+                            <td>
+                                USD/@Html.DisplayFor(modelItem => item.Currency)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Rate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Bid)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Ask)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Spread)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Margin)
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+<div style="text-align: right; width: 90%">
+    <a class="tertiary-button" href="@Url.Action("Summary", "AuditSummary")">
+        <img src="~/img/Return.png"> Cancel & Return to summary
+    </a>
+</div>

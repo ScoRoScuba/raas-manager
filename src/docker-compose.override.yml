@@ -1,0 +1,15 @@
+version: '3.4'
+
+services:
+  ofx.staticrates:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "60000:60000"
+    networks:
+      - bsl
+
+networks:
+    bsl:
+      external:
+        name: docker_bsl
